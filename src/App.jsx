@@ -11,6 +11,9 @@ const App = () => {
         } else if (value === "=") {
             if (input.trim() === "") {
                 setResult("Error");
+            } else if (/[\+\-\*\/]$/.test(input)) {
+                setResult("Error");
+                return;
             }
             const evalResult = eval(input);
             setResult(evalResult.toString());
