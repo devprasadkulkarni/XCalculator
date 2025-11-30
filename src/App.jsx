@@ -8,18 +8,31 @@ const App = () => {
         if (value === "C") {
             setInput("");
             setResult("");
-        } else if (value === "=") {
+            return;
+        }
+
+        if (value === "=") {
+            // Empty input → Error
             if (input.trim() === "") {
-                setResult("Error");
-            } else if (/[\+\-\*\/]$/.test(input)) {
                 setResult("Error");
                 return;
             }
-            const evalResult = eval(input);
-            setResult(evalResult.toString());
-        } else {
-            setInput((prev) => prev + value);
+
+            if (/[\+\-\*\/]$/.test(input)) {
+                setResult("Error");
+                return;
+            }
+
+            try {
+                const evalResult = eval(input);
+                setResult(evalResult.toString());
+            } catch (err) {
+                setResult("Error");
+            }
+            return;
         }
+
+        setInput((prev) => prev + value);
     };
 
     const buttons = [
@@ -46,14 +59,19 @@ const App = () => {
     return (
         <main className="flex flex-col justify-center items-center h-screen gap-6">
             <h1 className="text-5xl">React Calculator</h1>
+
             <input className="border p-2" type="text" readOnly value={input} />
-            <div className="h-4 text-2xl mb-4">{result}</div>
+
+            <div id="result" className="h-4 text-2xl mb-4">
+                {result}
+            </div>
+
             <div className="grid grid-cols-4 gap-4">
                 {buttons.map((btn) => (
                     <button
-                        onClick={() => handleClick(btn)}
                         key={btn}
                         className={buttonClass}
+                        onClick={() => handleClick(btn)}
                     >
                         {btn}
                     </button>
